@@ -11,12 +11,12 @@ contract Ownable {
     }
 
     modifier onlyOwner() {
-        require(msg.sender == owner, "Ownable: caller is not the owner");
+        require(msg.sender == owner, "Not the owner");
         _;
     }
 
     function transferOwnership(address newOwner) public onlyOwner {
-        require(newOwner != address(0), "Ownable: new owner is the zero address");
+        require(newOwner != address(0), "Invalid Address");
         emit OwnershipTransferred(owner, newOwner);
         owner = newOwner;
     }
