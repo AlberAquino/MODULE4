@@ -45,7 +45,8 @@ contract DegenToken is ERC20, Ownable {
     function burnDGN(uint256 amount) external {
         _burn(msg.sender, amount);
     }
-}
+// }
+
 ## Additional Information
 
 Student Info and Email address
