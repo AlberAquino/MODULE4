@@ -1,23 +1,40 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
-contract Ownable {
-    address public owner;
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+contract DegenToken is ERC20, Ownable {
+    address public storeAddress; // Address of the in-game store contract
 
-    constructor() {
-        owner = msg.sender;
+    constructor() ERC20("Degen", "DGN") Ownable(msg.sender) {
+        // Initialize token supply
+        _mint(msg.sender, 10 * 2**4); // Mint 160 Degen tokens
     }
 
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Not the owner");
-        _;
+    function setStoreAddress(address _storeAddress) external onlyOwner {
+        storeAddress = _storeAddress;
     }
 
-    function transferOwnership(address newOwner) public onlyOwner {
-        require(newOwner != address(0), "Invalid Address");
-        emit OwnershipTransferred(owner, newOwner);
-        owner = newOwner;
+    function redeemDGN(uint256 amount) external {
+        require(storeAddress != address(0), "Store address not set");
+        require(balanceOf(msg.sender) >= amount, "Insufficient balance");
+
+        // Transfer tokens to the store for redemption
+        _transfer(msg.sender, storeAddress, amount);
     }
+
+       function getBalance(address account) external view returns (uint256) {
+        return balanceOf(account);
+       }
+       function transferDGN(address recipient, uint256 amount) external {
+        _transfer(msg.sender, recipient, amount);
+    }
+       function burnDGN(uint256 amount) external {
+        _burn(msg.sender, amount);
+    }
+    function mint(address account, uint256 amount) external onlyOwner {
+        _mint(account, amount);
+    }
+    
 }
