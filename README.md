@@ -14,7 +14,7 @@ To interact with the DegenToken contract and leverage its functionalities, you c
 Explore and try different scenarios or functions like not having enough tokens or entering incorrect prices/values to see how the contract responds. If the user encounter any problems, use Remix IDE's debugger and console to understand the essence and functionalities of the codes and try to fix with different methods.
 
 ```
-// SPDX-License-Identifier: MIT
+// // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
