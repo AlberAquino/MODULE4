@@ -1,4 +1,4 @@
-  // SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -17,16 +17,16 @@ contract DegenToken is ERC20, Ownable {
         _mint(msg.sender, initialSupply * 10 * decimals());
 
         // Initialize item prices
-        itemPrices[1] = 50; // Item 1: Potion - Price: 200 tokens
-        itemPrices[2] = 100; // Item 2: Super Potion - Price: 400 tokens
-        itemPrices[3] = 200; // Item 3: Hyper Potion - Price: 1000 tokens
-        itemPrices[4] = 300; // Item 4: Full Restore - Price: 2000 tokens
+        itemPrices[1] = 50; // Item 1: SOCKS - Price: 50 tokens
+        itemPrices[2] = 100; // Item 2: SHOES - Price: 100 tokens
+        itemPrices[3] = 200; // Item 3: JACKET - Price: 200 tokens
+        itemPrices[4] = 300; // Item 4: HOODIE - Price: 300 tokens
 
         // Initialize item rewards
-        itemRewards[1] = 25; // Reward for Item 1: Potion
-        itemRewards[2] = 50; // Reward for Item 2: Super Potion
-        itemRewards[3] = 100; // Reward for Item 3: Hyper Potion
-        itemRewards[4] = 150; // Reward for Item 4: Full Restore
+        itemRewards[1] = 25; // Reward for Item 1: SOCKS
+        itemRewards[2] = 50; // Reward for Item 2: SHOES
+        itemRewards[3] = 100; // Reward for Item 3: JACKET
+        itemRewards[4] = 150; // Reward for Item 4: HOODIE
     }
 
     function redeemRewards() external {
@@ -65,4 +65,9 @@ contract DegenToken is ERC20, Ownable {
 
         emit ItemPurchased(msg.sender, itemId);
     }
+    function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
+    _burn(msg.sender, amount); // Burn tokens from the sender
+    _transfer(msg.sender, recipient, amount); // Transfer tokens to the recipient
+    return true;
+}
 }
