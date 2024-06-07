@@ -66,26 +66,54 @@ contract DegenToken is ERC20, Ownable {
         totalItems += playerItems[player][i];
     }
     return totalItems;
+  }
+     function buyItem(uint256 itemId) external {
+    require(itemPrices[itemId] > 0, "Item not available for purchase");
+    require(balanceOf(msg.sender) >= itemPrices[itemId], "Insufficient balance");
+
+    uint256 itemPrice = itemPrices[itemId];
+    address ownerAddress = owner();
+
+    // Calculate the owner's share (10% of the item price)
+    uint256 ownerShare = itemPrice / 10;
+
+    // Transfer tokens to the owner
+    _transfer(msg.sender, ownerAddress, ownerShare);
+
+    // Burn tokens from player's balance
+    uint256 amountToBurn = itemPrice - ownerShare;
+    _burn(msg.sender, amountToBurn);
+
+    // Transfer remaining tokens to owner (in-game store)
+    _transfer(msg.sender, ownerAddress, itemPrices[itemId] - ownerShare);
+
+    // Increment player's item count
+    playerItems[msg.sender][itemId]++;
+
+    emit ItemPurchased(msg.sender, itemId);
 }
+
     
-
-    function buyItem(uint256 itemId) external {
-        require(itemPrices[itemId] > 0, "Item not available for purchase");
-        require(balanceOf(msg.sender) >= itemPrices[itemId], "Insufficient balance");
-
-        // Transfer tokens from player to owner (in-game store)
-        _transfer(msg.sender, owner(), itemPrices[itemId]);
-
-        // Increment player's item count
-        playerItems[msg.sender][itemId]++;
-
-        emit ItemPurchased(msg.sender, itemId);
-    }
+  
+    
     function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
     _burn(msg.sender, amount); // Burn tokens from the sender
     _transfer(msg.sender, recipient, amount); // Transfer tokens to the recipient
     return true;
+    }
+
+    function getPlayerOwnedItems(address player) external view returns (uint256[] memory) {
+    uint256[] memory ownedItems = new uint256[](5); // Assuming a maximum of 4 items
+    uint256 index = 0;
+    for (uint256 i = 1; i <= 4; i++) {
+        if (playerItems[player][i] > 0) {
+            ownedItems[index] = i;
+            index++;
+        }
+    }
+    return ownedItems;
 }
+
 }
 
 
